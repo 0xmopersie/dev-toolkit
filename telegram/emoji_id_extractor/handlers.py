@@ -1,16 +1,6 @@
 from telegram import Update
 from telegram.ext import ContextTypes
 
-
-async def start(update: Update, context: ContextTypes.DEFAULT_TYPE):
-    await update.message.reply_text(
-        "👋 Send me a message containing Telegram custom emojis."
-    )
-
-
-from telegram import Update
-from telegram.ext import ContextTypes
-
 from utils import extract_custom_emojis
 
 
@@ -21,17 +11,29 @@ async def start(update: Update, context: ContextTypes.DEFAULT_TYPE):
 
 
 async def handle_message(update: Update, context: ContextTypes.DEFAULT_TYPE):
-    entities = update.message.entities
+    message = update.message
 
-    emoji_ids = extract_custom_emojis(entities)
+    emojis = extract_custom_emojis(message.entities)
 
-    if not emoji_ids:
-        await update.message.reply_text("❌ No custom emoji found.")
+    if not emojis:
+        await message.reply_text("❌ No custom emoji found.")
         return
 
-    text = "🎉 Custom Emoji IDs\n\n"
+    lines = [f"🎉 Found {len(emojis)} Custom Emoji(s)\n"]
 
-    for emoji_id in emoji_ids:
-        text += f"`{emoji_id}`\n"
+    for index, item in enumerate(emojis, start=1):
+        lines.extend(
+            [
+                f"#{index}",
+                f"ID: `{item['id']}`",
+                f"Type: {item['type']}",
+                f"Offset: {item['offset']}",
+                f"Length: {item['length']}",
+                "",
+            ]
+        )
 
-    await update.message.reply_text(text, parse_mode="Markdown")
+    await message.reply_text(
+        "\n".join(lines),
+        parse_mode="Markdown",
+    )
