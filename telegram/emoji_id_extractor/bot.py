@@ -12,10 +12,16 @@ from handlers import handle_message, start
 def main():
     app = Application.builder().token(BOT_TOKEN).build()
 
-    app.add_handler(CommandHandler("start", start))
     app.add_handler(
-        MessageHandler(filters.TEXT | filters.Caption(True), handle_message)
+    MessageHandler(
+        filters.TEXT
+        | filters.PHOTO
+        | filters.VIDEO
+        | filters.ANIMATION
+        | filters.Document.ALL,
+        handle_message,
     )
+)
 
     print("Bot is running...")
 

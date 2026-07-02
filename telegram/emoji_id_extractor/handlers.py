@@ -13,13 +13,20 @@ async def start(update: Update, context: ContextTypes.DEFAULT_TYPE):
 async def handle_message(update: Update, context: ContextTypes.DEFAULT_TYPE):
     message = update.message
 
-    emojis = extract_custom_emojis(message.entities)
+    text = message.text or message.caption or ""
+
+    entities = message.entities or message.caption_entities
+
+    emojis = extract_custom_emojis(entities)
 
     if not emojis:
         await message.reply_text("❌ No custom emoji found.")
         return
 
-    lines = [f"🎉 Found {len(emojis)} Custom Emoji(s)\n"]
+    lines = [
+        f"🎉 Found {len(emojis)} Custom Emoji(s)",
+        "",
+    ]
 
     for index, item in enumerate(emojis, start=1):
         lines.extend(
