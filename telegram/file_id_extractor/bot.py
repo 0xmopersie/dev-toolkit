@@ -32,7 +32,7 @@ def main():
 
     app.add_handler(
         MessageHandler(
-            filters.ALL,
+            filters.PHOTO,
             handle_message,
         )
     )
