@@ -3,13 +3,13 @@ import logging
 from telegram.ext import (
     Application,
     CommandHandler,
-    MessageHandler,
     ContextTypes,
+    MessageHandler,
     filters,
 )
 
 from config import BOT_TOKEN
-from handlers import start, handle_message
+from handlers import handle_message, start
 
 logging.basicConfig(
     format="%(asctime)s | %(levelname)s | %(name)s | %(message)s",
@@ -31,14 +31,17 @@ def main():
     app.add_handler(CommandHandler("start", start))
 
     app.add_handler(
-    MessageHandler(
-        filters.PHOTO
-        | filters.VIDEO
-        | filters.ANIMATION
-        | filters.VIDEO_NOTE,
-        handle_message,
+        MessageHandler(
+            filters.PHOTO
+            | filters.VIDEO
+            | filters.ANIMATION
+            | filters.VIDEO_NOTE
+            | filters.Document.ALL
+            | filters.AUDIO
+            | filters.VOICE,
+            handle_message,
+        )
     )
-)
 
     app.add_error_handler(error_handler)
 
