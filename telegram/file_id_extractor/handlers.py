@@ -8,6 +8,7 @@ from utils import (
     format_audio_info,
     format_document_info,
     format_photo_info,
+    format_sticker_info,
     format_video_info,
     format_video_note_info,
     format_voice_info,
@@ -27,7 +28,6 @@ async def handle_message(update: Update, context: ContextTypes.DEFAULT_TYPE):
 
     if message.photo:
         logger.info("Photo received.")
-
         await message.reply_text(
             format_photo_info(message.photo[-1]),
             parse_mode="Markdown",
@@ -36,7 +36,6 @@ async def handle_message(update: Update, context: ContextTypes.DEFAULT_TYPE):
 
     if message.video:
         logger.info("Video received.")
-
         await message.reply_text(
             format_video_info(message.video),
             parse_mode="Markdown",
@@ -45,7 +44,6 @@ async def handle_message(update: Update, context: ContextTypes.DEFAULT_TYPE):
 
     if message.animation:
         logger.info("Animation received.")
-
         await message.reply_text(
             format_animation_info(message.animation),
             parse_mode="Markdown",
@@ -54,7 +52,6 @@ async def handle_message(update: Update, context: ContextTypes.DEFAULT_TYPE):
 
     if message.video_note:
         logger.info("Video Note received.")
-
         await message.reply_text(
             format_video_note_info(message.video_note),
             parse_mode="Markdown",
@@ -63,7 +60,6 @@ async def handle_message(update: Update, context: ContextTypes.DEFAULT_TYPE):
 
     if message.document:
         logger.info("Document received.")
-
         await message.reply_text(
             format_document_info(message.document),
             parse_mode="Markdown",
@@ -72,7 +68,6 @@ async def handle_message(update: Update, context: ContextTypes.DEFAULT_TYPE):
 
     if message.audio:
         logger.info("Audio received.")
-
         await message.reply_text(
             format_audio_info(message.audio),
             parse_mode="Markdown",
@@ -81,9 +76,16 @@ async def handle_message(update: Update, context: ContextTypes.DEFAULT_TYPE):
 
     if message.voice:
         logger.info("Voice received.")
-
         await message.reply_text(
             format_voice_info(message.voice),
+            parse_mode="Markdown",
+        )
+        return
+
+    if message.sticker:
+        logger.info("Sticker received.")
+        await message.reply_text(
+            format_sticker_info(message.sticker),
             parse_mode="Markdown",
         )
         return

@@ -3,6 +3,7 @@ from telegram import (
     Audio,
     Document,
     PhotoSize,
+    Sticker,
     Video,
     VideoNote,
     Voice,
@@ -20,7 +21,6 @@ def format_file_info(
     file_name: str | None = None,
     mime_type: str | None = None,
 ) -> str:
-
     lines = [
         title,
         "",
@@ -133,3 +133,25 @@ def format_voice_info(voice: Voice):
         duration=voice.duration,
         mime_type=voice.mime_type,
     )
+
+
+def format_sticker_info(sticker: Sticker):
+    lines = [
+        "🟢 Sticker Information",
+        "",
+        f"Emoji: {sticker.emoji or 'N/A'}",
+        f"Sticker Set: {sticker.set_name or 'N/A'}",
+        f"Animated: {sticker.is_animated}",
+        f"Video Sticker: {sticker.is_video}",
+        "",
+        "File ID:",
+        f"`{sticker.file_id}`",
+        "",
+        "Unique File ID:",
+        f"`{sticker.file_unique_id}`",
+    ]
+
+    if sticker.file_size:
+        lines.append(f"File Size: {sticker.file_size} bytes")
+
+    return "\n".join(lines)
