@@ -155,3 +155,23 @@ def format_sticker_info(sticker: Sticker):
         lines.append(f"File Size: {sticker.file_size} bytes")
 
     return "\n".join(lines)
+from telegram import MessageEntity
+
+
+def extract_custom_emojis(entities: list[MessageEntity] | None):
+    if not entities:
+        return []
+
+    results = []
+
+    for entity in entities:
+        if entity.type == MessageEntity.CUSTOM_EMOJI:
+            results.append(
+                {
+                    "id": entity.custom_emoji_id,
+                    "offset": entity.offset,
+                    "length": entity.length,
+                }
+            )
+
+    return results

@@ -4,6 +4,7 @@ from telegram import Update
 from telegram.ext import ContextTypes
 
 from utils import (
+    extract_custom_emojis,
     format_animation_info,
     format_audio_info,
     format_document_info,
@@ -25,6 +26,35 @@ async def start(update: Update, context: ContextTypes.DEFAULT_TYPE):
 
 async def handle_message(update: Update, context: ContextTypes.DEFAULT_TYPE):
     message = update.message
+
+    # -------- Custom Emoji --------
+
+    entities = message.entities or message.caption_entities
+    custom_emojis = extract_custom_emojis(entities)
+
+    if custom_emojis:
+        lines = [
+            f"🎉 Found {len(custom_emojis)} Custom Emoji(s)",
+            "",
+        ]
+
+        for index, emoji in enumerate(custom_emojis, start=1):
+            lines.extend(
+                [
+                    f"#{index}",
+                    f"ID: `{emoji['id']}`",
+                    f"Offset: {emoji['offset']}",
+                    f"Length: {emoji['length']}",
+                    "",
+                ]
+            )
+
+        await message.reply_text(
+            "\n".join(lines),
+            parse_mode="Markdown",
+        )
+
+    # -------- Media --------
 
     if message.photo:
         logger.info("Photo received.")
@@ -90,6 +120,7 @@ async def handle_message(update: Update, context: ContextTypes.DEFAULT_TYPE):
         )
         return
 
-    await message.reply_text(
-        "❌ Unsupported media type."
-    )
+    if not custom_emojis:
+        await message.reply_text(
+            "❌ Unsupported media type."
+        )
